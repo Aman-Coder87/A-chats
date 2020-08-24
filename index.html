@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DevAman A_chat App</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <style>
+    
+    @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
+    
+        body {
+            margin: 0;
+            font-family: 'Do Hyeon', sans-serif;
+        }
+
+        form {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            margin: auto;
+            padding: 0.25rem;
+            text-align: center;
+        }
+
+        form input {
+            border: 0;
+            padding: 0.5rem;
+            width: 80%;
+            outline: 0;
+            margin: auto;
+            border-radius: 25px;
+            background: #ccc;
+        }
+
+        form button {
+            width: 7rem;
+            background-color: #466dec;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            cursor: pointer;
+            border-radius: 100px;
+            text-transform: uppercase;
+            transition: 0.4s ease-in;
+            outline: none;
+        }
+
+        form button:hover {
+            background-color: #166d01;
+        }
+
+        .messages {
+            margin: 0;
+            padding: 0;
+            margin-bottom: 3rem;
+        }
+
+        .messages li{
+            padding: 0.8rem;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+        ul {
+            
+            list-style-type: none;
+        }
+        .messages li:nth-child(1) {
+            padding: 0.5rem;
+            text-align: center;
+            width: 50%;
+            margin: auto;
+            background-color: rgb(37, 143, 241);
+            color: white;
+
+        }
+        .messages li:nth-child(odd) {
+            border-radius: 100px;
+            
+            width: 80%;
+            margin: auto;
+
+        }
+
+        .messages li:nth-child(even) {
+            background: #eee;
+            border-radius: 25px;
+            border-radius: 100px;
+            width: 80%;
+            margin: auto;
+            margin-top: 2px;
+
+        }
+        h1 {
+            text-align: center;
+        }
+        section {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h1>DevAman A-Chat App</h1>
+    </section>
+    <ul class="messages"></ul>
+    <form>
+        <input type="text" class="input" autocomplete="off" autofocus /><br><br>
+        <button>Send</button>
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+    <script>
+        const form = document.querySelector("form");
+        const input = document.querySelector(".input");
+        const messages = document.querySelector(".messages");
+        const username = prompt("Please enter a nickname: ", "");
+        const socket = io();
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            addMessage(username + ": " + input.value);
+
+            socket.emit("chat_message", {
+                message: input.value
+            });
+
+            input.value = "";
+            return false;
+        }, false);
+
+        socket.on("chat_message", function (data) {
+            addMessage(data.username + ": " + data.message);
+        });
+
+        socket.on("user_join", function (data) {
+            addMessage(data + " just joined the chat!");
+        });
+
+        socket.on("user_leave", function (data) {
+            addMessage(data + " has left the chat.");
+        });
+
+        addMessage("You have joined the chat as '" + username + "'.");
+        socket.emit("user_join", username);
+
+        function addMessage(message) {
+            const li = document.createElement("li");
+            li.innerHTML = message;
+            messages.appendChild(li);
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
+</body>
+
+</html>
