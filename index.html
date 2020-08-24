@@ -52,7 +52,7 @@
         .messages {
             margin: 0;
             padding: 0;
-            margin-bottom: 3rem;
+            margin-bottom: 10rem;
         }
 
         .messages li{
@@ -114,7 +114,7 @@
         const form = document.querySelector("form");
         const input = document.querySelector(".input");
         const messages = document.querySelector(".messages");
-        const username = prompt("Please enter a nickname: ", "");
+        const username = prompt("Please enter your nickname: ", "");
         const socket = io();
 
         form.addEventListener("submit", function (event) {
